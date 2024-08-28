@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "eda-connect-k8s.fullname" . }}-controller-metrics-service
+  labels:
+    eda.nokia.com/app: connect-k8s-controller
+    eda.nokia.com/app-group: connect
+  {{- include "eda-connect-k8s.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.controllerMetricsService.type }}
+  selector:
+    eda.nokia.com/app: connect-k8s-controller
+  {{- include "eda-connect-k8s.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.controllerMetricsService.ports | toYaml | nindent 2 }}

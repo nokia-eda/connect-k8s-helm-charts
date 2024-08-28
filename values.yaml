@@ -1,0 +1,66 @@
+controller:
+  imagePullSecretName: regcred
+  connectK8SController:
+    args:
+    - --health-probe-bind-address=:8081
+    - --metrics-bind-address=127.0.0.1:8080
+    - --leader-elect
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+    image:
+      repository: ghcr.io/nokia-eda/eda-connect-k8s-controller
+      tag: v1.0.0
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+  kubeRbacProxy:
+    args:
+    - --secure-listen-address=0.0.0.0:8443
+    - --upstream=http://127.0.0.1:8080/
+    - --logtostderr=true
+    - --v=0
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+    image:
+      repository: gcr.io/kubebuilder/kube-rbac-proxy
+      tag: v0.14.1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 5m
+        memory: 64Mi
+  replicas: 1
+  serviceAccount:
+    annotations: {}
+controllerEnvConfig:
+  connectpluginname: k8s-controller-plugin
+  heartbeat: "10"
+  namespace: default
+  skiptlsverify: "false"
+  tlscertificatedata: '[ca-data]'
+  tlsenabled: "true"
+controllerEnvSecret:
+  connectHost: ""
+  connectPassword: ""
+  connectUsername: ""
+controllerMetricsService:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: https
+  type: ClusterIP
+kubernetesClusterDomain: cluster.local

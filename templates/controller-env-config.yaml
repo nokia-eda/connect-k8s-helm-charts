@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+  labels:
+  {{- include "eda-connect-k8s.labels" . | nindent 4 }}
+data:
+  CONNECTPLUGINNAME: {{ .Values.controllerEnvConfig.connectpluginname | quote }}
+  HEARTBEAT: {{ .Values.controllerEnvConfig.heartbeat | quote }}
+  NAMESPACE: {{ .Values.controllerEnvConfig.namespace | quote }}
+  SKIPTLSVERIFY: {{ .Values.controllerEnvConfig.skiptlsverify | quote }}
+  TLSCERTIFICATEDATA: {{ .Values.controllerEnvConfig.tlscertificatedata | quote }}
+  TLSENABLED: {{ .Values.controllerEnvConfig.tlsenabled | quote }}

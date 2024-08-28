@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eda-connect-k8s.fullname" . }}-controller
+  labels:
+    app.kubernetes.io/component: manager
+    app.kubernetes.io/created-by: controller
+    app.kubernetes.io/part-of: controller
+    eda.nokia.com/app: connect-k8s-controller
+    eda.nokia.com/app-group: connect
+  {{- include "eda-connect-k8s.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.controller.replicas }}
+  selector:
+    matchLabels:
+      eda.nokia.com/app: connect-k8s-controller
+    {{- include "eda-connect-k8s.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        eda.nokia.com/app: connect-k8s-controller
+        eda.nokia.com/app-group: connect
+      {{- include "eda-connect-k8s.selectorLabels" . | nindent 8 }}
+      annotations:
+        kubectl.kubernetes.io/default-container: connect-k8s-controller
+    spec:
+      containers:
+      - args: {{- toYaml .Values.controller.kubeRbacProxy.args | nindent 8 }}
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.controller.kubeRbacProxy.image.repository }}:{{ .Values.controller.kubeRbacProxy.image.tag
+          | default .Chart.AppVersion }}
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources: {{- toYaml .Values.controller.kubeRbacProxy.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.controller.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.controller.connectK8SController.args | nindent 8 }}
+        command:
+        - /connect-k8s-controller
+        env:
+        - name: HEARTBEAT
+          valueFrom:
+            configMapKeyRef:
+              key: HEARTBEAT
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+        - name: SKIPTLSVERIFY
+          valueFrom:
+            configMapKeyRef:
+              key: SKIPTLSVERIFY
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+        - name: TLSENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: TLSENABLED
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+        - name: TLSCERTIFICATEDATA
+          valueFrom:
+            configMapKeyRef:
+              key: TLSCERTIFICATEDATA
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+        - name: CONNECTPLUGINNAME
+          valueFrom:
+            configMapKeyRef:
+              key: CONNECTPLUGINNAME
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+        - name: NAMESPACE
+          valueFrom:
+            configMapKeyRef:
+              key: NAMESPACE
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+        - name: CONNECTHOST
+          valueFrom:
+            secretKeyRef:
+              key: CONNECT_HOST
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-secret
+        - name: CONNECTUSERNAME
+          valueFrom:
+            secretKeyRef:
+              key: CONNECT_USERNAME
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-secret
+        - name: CONNECTPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: CONNECT_PASSWORD
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-secret
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.controller.connectK8SController.image.repository }}:{{ .Values.controller.connectK8SController.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.controller.connectK8SController.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: connect-k8s-controller
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources: {{- toYaml .Values.controller.connectK8SController.resources | nindent
+          10 }}
+        securityContext: {{- toYaml .Values.controller.connectK8SController.containerSecurityContext
+          | nindent 10 }}
+      imagePullSecrets:
+      - name: {{ .Values.controller.imagePullSecretName }}
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: {{ include "eda-connect-k8s.fullname" . }}-controller
+      terminationGracePeriodSeconds: 10
