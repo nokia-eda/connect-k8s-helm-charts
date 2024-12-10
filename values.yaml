@@ -12,7 +12,7 @@ controller:
         - ALL
     image:
       repository: ghcr.io/nokia-eda/eda-connect-k8s-controller
-      tag: v1.0.0
+      tag: v2.0.0
     imagePullPolicy: IfNotPresent
     resources:
       limits:
@@ -42,12 +42,15 @@ controller:
       requests:
         cpu: 5m
         memory: 64Mi
+  podSecurityContext:
+    runAsNonRoot: true
   replicas: 1
   serviceAccount:
     annotations: {}
 controllerEnvConfig:
   connectpluginname: k8s-controller-plugin
   heartbeat: "10"
+  loglevel: info
   namespace: default
   skiptlsverify: "false"
   tlscertificatedata: '[ca-data]'

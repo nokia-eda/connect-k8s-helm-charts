@@ -6,9 +6,30 @@ metadata:
   {{- include "eda-connect-k8s.labels" . | nindent 4 }}
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - connect.eda.nokia.com
   resources:
   - connectnetworkattachmentstatuses
+  - connectnetworkdefinitions
   verbs:
   - create
   - delete
@@ -29,18 +50,6 @@ rules:
 - apiGroups:
   - connect.eda.nokia.com
   resources:
-  - connectnetworkdefinitions
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - connect.eda.nokia.com
-  resources:
   - connectnetworkdefinitions/finalizers
   verbs:
   - update
@@ -48,26 +57,6 @@ rules:
   - connect.eda.nokia.com
   resources:
   - connectnetworkdefinitions/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - pods/status
   verbs:
   - get
   - patch

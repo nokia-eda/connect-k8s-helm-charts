@@ -7,6 +7,7 @@ metadata:
 data:
   CONNECTPLUGINNAME: {{ .Values.controllerEnvConfig.connectpluginname | quote }}
   HEARTBEAT: {{ .Values.controllerEnvConfig.heartbeat | quote }}
+  LOGLEVEL: {{ .Values.controllerEnvConfig.loglevel | quote }}
   NAMESPACE: {{ .Values.controllerEnvConfig.namespace | quote }}
   SKIPTLSVERIFY: {{ .Values.controllerEnvConfig.skiptlsverify | quote }}
   TLSCERTIFICATEDATA: {{ .Values.controllerEnvConfig.tlscertificatedata | quote }}

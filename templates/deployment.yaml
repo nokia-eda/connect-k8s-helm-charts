@@ -58,6 +58,11 @@ spec:
             configMapKeyRef:
               key: TLSENABLED
               name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
+        - name: LOGLEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: LOGLEVEL
+              name: {{ include "eda-connect-k8s.fullname" . }}-controller-env-config
         - name: TLSCERTIFICATEDATA
           valueFrom:
             configMapKeyRef:
@@ -112,7 +117,6 @@ spec:
           | nindent 10 }}
       imagePullSecrets:
       - name: {{ .Values.controller.imagePullSecretName }}
-      securityContext:
-        runAsNonRoot: true
+      securityContext: {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "eda-connect-k8s.fullname" . }}-controller
       terminationGracePeriodSeconds: 10
