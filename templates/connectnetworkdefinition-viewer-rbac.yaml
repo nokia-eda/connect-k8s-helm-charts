@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "eda-connect-k8s.fullname" . }}-connectnetworkdefinition-viewer-role
+  labels:
+    eda.nokia.com/app: connect-k8s-controller
+    eda.nokia.com/app-group: connect
+  {{- include "eda-connect-k8s.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - connect.eda.nokia.com
+  resources:
+  - connectnetworkdefinitions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - connect.eda.nokia.com
+  resources:
+  - connectnetworkdefinitions/status
+  verbs:
+  - get

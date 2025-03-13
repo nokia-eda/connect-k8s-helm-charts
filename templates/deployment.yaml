@@ -25,20 +25,6 @@ spec:
         kubectl.kubernetes.io/default-container: connect-k8s-controller
     spec:
       containers:
-      - args: {{- toYaml .Values.controller.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.controller.kubeRbacProxy.image.repository }}:{{ .Values.controller.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.controller.kubeRbacProxy.resources | nindent 10 }}
-        securityContext: {{- toYaml .Values.controller.kubeRbacProxy.containerSecurityContext
-          | nindent 10 }}
       - args: {{- toYaml .Values.controller.connectK8SController.args | nindent 8 }}
         command:
         - /connect-k8s-controller
@@ -117,6 +103,7 @@ spec:
           | nindent 10 }}
       imagePullSecrets:
       - name: {{ .Values.controller.imagePullSecretName }}
-      securityContext: {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
+      securityContext:
+        runAsNonRoot: true
       serviceAccountName: {{ include "eda-connect-k8s.fullname" . }}-controller
       terminationGracePeriodSeconds: 10
