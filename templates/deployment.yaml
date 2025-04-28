@@ -103,7 +103,6 @@ spec:
           | nindent 10 }}
       imagePullSecrets:
       - name: {{ .Values.controller.imagePullSecretName }}
-      securityContext:
-        runAsNonRoot: true
+      securityContext: {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "eda-connect-k8s.fullname" . }}-controller
       terminationGracePeriodSeconds: 10

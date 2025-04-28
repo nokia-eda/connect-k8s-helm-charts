@@ -44,7 +44,7 @@ spec:
               routers:
                 description: |-
                   Important: Run "make" to regenerate code after modifying this file
-                  List of routers by name
+                  List of Routers by name
                 items:
                   properties:
                     name:
@@ -110,6 +110,10 @@ spec:
                           name:
                             description: Name of the network attachment definition along
                               with namespace
+                            type: string
+                          preProvisionHostGroupSelector:
+                            description: PreProvisionHostGroupSelector is the host selector
+                              for sub-interface pre-provisioning
                             type: string
                           trunkVlans:
                             description: |-
