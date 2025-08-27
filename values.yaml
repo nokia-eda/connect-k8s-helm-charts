@@ -12,7 +12,7 @@ controller:
         - ALL
     image:
       repository: ghcr.io/nokia-eda/eda-connect-k8s-controller
-      tag: 3.0.1
+      tag: 4.0.0
     imagePullPolicy: IfNotPresent
     resources:
       limits:
