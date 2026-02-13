@@ -11,8 +11,8 @@ controller:
         drop:
         - ALL
     image:
-      repository: connect-k8s-controller
-      tag: latest
+      repository: "ghcr.io/nokia-eda/eda-connect-k8s-controller"
+      tag: "5.0.0"
     imagePullPolicy: IfNotPresent
     resources:
       limits:

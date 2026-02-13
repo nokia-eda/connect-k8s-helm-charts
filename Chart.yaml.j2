@@ -19,4 +19,4 @@ version: "{{ "0.1.0" if eda_release == "0.0.0" else app_version[1:] }}"{# strip 
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-oppVersion: "{{ "0.1.0" if eda_release == "0.0.0" else app_version[1:] }}"{# strip the v #}
+appVersion: "{{ "0.1.0" if eda_release == "0.0.0" else app_version[1:] }}"{# strip the v #}
