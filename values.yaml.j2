@@ -11,8 +11,8 @@ controller:
         drop:
         - ALL
     image:
-      repository: "ghcr.io/nokia-eda/eda-connect-k8s-controller"
-      tag: "6.0.0"
+      repository: "{{ "connect-k8s-controller" if eda_release == "0.0.0" else "ghcr.io/nokia-eda/eda-connect-k8s-controller" }}"
+      tag: "{{ "latest" if eda_release == "0.0.0" else app_version[1:] }}"{# strip the v #}
     imagePullPolicy: IfNotPresent
     resources:
       limits:
