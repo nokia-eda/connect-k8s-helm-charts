@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: connectnetworkattachmentstatuses.connect.eda.nokia.com
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.4
+    controller-gen.kubebuilder.io/version: v0.21.0
   labels:
   {{- include "eda-connect-k8s.labels" . | nindent 4 }}
 spec:
@@ -106,6 +106,14 @@ spec:
                     cndName:
                       type: string
                     sync:
+                      description: Sync is the controller reconciliation state for this
+                        subnet.
+                      enum:
+                      - SyncDone
+                      - SyncError
+                      - SyncInProgress
+                      - Deleted
+                      - DeleteError
                       type: string
                     syncDetails:
                       type: string
@@ -115,6 +123,14 @@ spec:
                           id:
                             type: string
                           sync:
+                            description: Sync is the controller reconciliation state
+                              for this VLAN.
+                            enum:
+                            - SyncDone
+                            - SyncError
+                            - SyncInProgress
+                            - Deleted
+                            - DeleteError
                             type: string
                           syncDetails:
                             type: string

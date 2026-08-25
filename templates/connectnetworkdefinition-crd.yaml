@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: connectnetworkdefinitions.connect.eda.nokia.com
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.4
+    controller-gen.kubebuilder.io/version: v0.21.0
   labels:
   {{- include "eda-connect-k8s.labels" . | nindent 4 }}
 spec:
@@ -61,6 +61,7 @@ spec:
                     ipMTU:
                       default: 1500
                       description: Set the IP MTU for the RoutedInterface [default=1500]
+                      format: int32
                       maximum: 9486
                       minimum: 1280
                       type: integer
@@ -149,6 +150,13 @@ spec:
                     name:
                       type: string
                     sync:
+                      description: Sync is the controller reconciliation state for this
+                        router.
+                      enum:
+                      - SyncDone
+                      - SyncError
+                      - Deleted
+                      - DeleteError
                       type: string
                     syncDetails:
                       type: string
@@ -177,6 +185,12 @@ spec:
                           name:
                             type: string
                           status:
+                            description: Status describes how this NAD is represented
+                              in the CND (trunk vs error states).
+                            enum:
+                            - Trunk
+                            - DoesNotExist
+                            - ConfigurationError
                             type: string
                           statusDetail:
                             type: string
@@ -186,6 +200,14 @@ spec:
                                 id:
                                   type: string
                                 sync:
+                                  description: Sync is the controller reconciliation
+                                    state for this VLAN.
+                                  enum:
+                                  - SyncDone
+                                  - SyncError
+                                  - SyncInProgress
+                                  - Deleted
+                                  - DeleteError
                                   type: string
                                 syncDetails:
                                   type: string
@@ -201,6 +223,13 @@ spec:
                     name:
                       type: string
                     sync:
+                      description: Sync is the controller reconciliation state for this
+                        subnet.
+                      enum:
+                      - SyncDone
+                      - SyncError
+                      - Deleted
+                      - DeleteError
                       type: string
                     syncDetails:
                       type: string
